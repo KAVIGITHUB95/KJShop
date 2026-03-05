@@ -89,7 +89,10 @@ public class CategoryFragment extends Fragment {
                     ListingFragment fragment = new ListingFragment();
                     fragment.setArguments(bundle);
 
-                    getParentFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).addToBackStack(null).commit();
+                    getParentFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_container, fragment)
+                            .addToBackStack(null)
+                            .commit();
                 });
                 binding.recyclerViewCategories.setAdapter(adapter);
             }

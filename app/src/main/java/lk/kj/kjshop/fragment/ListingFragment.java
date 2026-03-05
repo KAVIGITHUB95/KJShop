@@ -12,10 +12,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+
+import java.util.List;
 
 import lk.kj.kjshop.R;
 import lk.kj.kjshop.adapter.ListingAdapter;
 import lk.kj.kjshop.databinding.FragmentListingBinding;
+import lk.kj.kjshop.model.Product;
 
 
 public class ListingFragment extends Fragment {
@@ -28,6 +32,8 @@ public class ListingFragment extends Fragment {
 
     private ListingAdapter adapter;
 
+    private String categoryId;
+
 
 
     @Override
@@ -35,7 +41,7 @@ public class ListingFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-
+            categoryId = getArguments().getString("categoryId");
         }
     }
 
@@ -54,6 +60,13 @@ public class ListingFragment extends Fragment {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        db.collection("products").whereEqualTo("categoryId", )
+        db.collection("products").whereEqualTo("categoryId", categoryId).orderBy("title", Query.Direction.ASCENDING).get().addOnSuccessListener(ds -> {
+            if (!ds.isEmpty()) {
+                List<Product> products = ds.toObjects(Product.class);
+                adapter = new ListingAdapter(products, product -> {
+
+                });
+            }
+        });
     }
 }
