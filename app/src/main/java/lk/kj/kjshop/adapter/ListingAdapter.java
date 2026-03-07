@@ -20,10 +20,9 @@ import lk.kj.kjshop.model.Category;
 import lk.kj.kjshop.model.Product;
 
 
+
 public class ListingAdapter extends RecyclerView.Adapter<ListingAdapter.ViewHolder> {
     private List<Product> products;
-
-
     private OnListingItemClickListener listener;
 
     public ListingAdapter(List<Product> products, OnListingItemClickListener listener) {
@@ -39,41 +38,39 @@ public class ListingAdapter extends RecyclerView.Adapter<ListingAdapter.ViewHold
         return new ViewHolder(view);
     }
 
-
-
     @Override
     public void onBindViewHolder(@NonNull ListingAdapter.ViewHolder holder, int position) {
 
-
         Product product = products.get(position);
         holder.productTitle.setText(product.getTitle());
-        holder.productPrice.setText(product.getPrice()+"");
-        Glide.with(holder.itemView.getContext()).load(product.getImages().get(0)).into(holder.productImage);
-
+        holder.productPrice.setText("LKR " + product.getPrice());
+        Glide.with(holder.itemView.getContext()).load(product.getImages().get(0)).centerCrop().into(holder.productImage);
         holder.itemView.setOnClickListener(v -> {
 
             Animation animation = AnimationUtils.loadAnimation(v.getContext(), R.anim.click_animation);
             v.startAnimation(animation);
             if (listener != null) {
-
-
                 listener.onListingItemClick(product);
+
+
+
 
             }
         });
     }
 
-    @Override
     public int getItemCount() {
 
         return products.size();
     }
 
+    public interface OnListingItemClickListener {
+        void onListingItemClick(Product product);
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView productImage;
-
-
 
 
         TextView productTitle;
@@ -85,12 +82,5 @@ public class ListingAdapter extends RecyclerView.Adapter<ListingAdapter.ViewHold
             productTitle = itemView.findViewById(R.id.listing_item_name);
             productPrice = itemView.findViewById(R.id.listing_item_price);
         }
-    }
-
-
-
-
-    public interface OnListingItemClickListener {
-        void onListingItemClick(Product product);
     }
 }
