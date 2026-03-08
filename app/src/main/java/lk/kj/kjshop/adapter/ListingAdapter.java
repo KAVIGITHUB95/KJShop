@@ -55,25 +55,25 @@ public class ListingAdapter extends RecyclerView.Adapter<ListingAdapter.ViewHold
 
 
 
+
+
             }
         });
     }
 
     public int getItemCount() {
-
         return products.size();
-    }
-
-    public interface OnListingItemClickListener {
-        void onListingItemClick(Product product);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
+
+
+
+
         ImageView productImage;
-
-
         TextView productTitle;
+
         TextView productPrice;
 
         public ViewHolder(@NonNull View itemView) {
@@ -82,5 +82,11 @@ public class ListingAdapter extends RecyclerView.Adapter<ListingAdapter.ViewHold
             productTitle = itemView.findViewById(R.id.listing_item_name);
             productPrice = itemView.findViewById(R.id.listing_item_price);
         }
+
+    }
+
+    public interface OnListingItemClickListener {
+        void onListingItemClick(Product product);
+
     }
 }

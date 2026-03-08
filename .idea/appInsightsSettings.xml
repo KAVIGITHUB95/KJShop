@@ -7,14 +7,6 @@
         <entry key="Firebase Crashlytics">
           <value>
             <InsightsFilterSettings>
-              <option name="connection">
-                <ConnectionSetting>
-                  <option name="appId" value="lk.kj.kjshop" />
-                  <option name="mobileSdkAppId" value="1:375290380748:android:be837097a5916718b7dd69" />
-                  <option name="projectId" value="voltmart-637f5" />
-                  <option name="projectNumber" value="375290380748" />
-                </ConnectionSetting>
-              </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
               <option name="timeIntervalDays" value="THIRTY_DAYS" />
               <option name="visibilityType" value="ALL" />

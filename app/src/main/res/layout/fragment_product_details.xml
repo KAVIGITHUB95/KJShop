@@ -87,6 +87,14 @@
                 
                 <!-- Need to complete -->
 
+
+                <LinearLayout
+                    android:id="@+id/product_details_attribute_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:orientation="vertical"/>
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -140,10 +148,10 @@
                 </LinearLayout>
             </LinearLayout>
             
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="600dp"
-                android:background="@color/md_theme_secondary" />
+
+            <include android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+                layout="@layout/item_section"/>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

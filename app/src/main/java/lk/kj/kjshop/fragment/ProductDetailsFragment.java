@@ -1,5 +1,7 @@
 package lk.kj.kjshop.fragment;
 
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
@@ -8,12 +10,17 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -48,6 +55,16 @@ public class ProductDetailsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
         super.onViewCreated(view, savedInstanceState);
+        getActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+
+
+
+
+            @Override
+            public void handleOnBackPressed() {
+                requireActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
 
         getActivity().findViewById(R.id.bottom_navigation_view).setVisibility(View.GONE);
 
@@ -80,28 +97,74 @@ public class ProductDetailsFragment extends Fragment {
                     binding.productDetailsAvbQty.setText(String.valueOf(product.getStockCount()));
 
 
+                    if (product.getAttributes() != null) {
 
+
+                        product.getAttributes().forEach(attribute -> {
+
+
+
+                            renderAttribute(attribute, binding.productDetailsAttributeContainer);
+                        });
+                    }
 
                 }
 
             }
 
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-
-            public void onFailure(@NonNull Exception e) {
-                Log.e("Firestore", "Error: " + e.getMessage());
-            }
         });
 
-        getActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
 
 
-            @Override
-            public void handleOnBackPressed() {
-                requireActivity().getSupportFragmentManager().popBackStack();
+    }
+    private void renderAttribute(Product.Attribute attribute, ViewGroup container) {
+
+
+        LinearLayout row = new LinearLayout(getContext());
+        row.setOrientation(LinearLayout.HORIZONTAL);
+
+
+        //Create Label
+        TextView label = new TextView(getContext());
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(100, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        layoutParams.gravity = Gravity.CENTER_VERTICAL;
+        label.setText(attribute.getName());
+
+        row.addView(label);
+
+
+        //Create Options
+        ChipGroup group = new ChipGroup(getContext());
+        group.setSelectionRequired(true);
+        group.setSingleSelection(true);
+
+        attribute.getValues().forEach(value -> {
+
+
+            Chip chip = new Chip(getContext());
+            chip.setCheckable(true);
+            chip.setChipStrokeWidth(3f);
+
+
+
+
+            if ("color".equals(attribute.getType())) {
+                chip.setChipBackgroundColor(ColorStateList.valueOf(Color.parseColor(value)));
+            } else {
+                chip.setText(value);
             }
+
+            group.addView(chip);
         });
+
+
+        row.addView(group);
+
+
+        container.addView(row);
+
+
     }
 
     @Override
