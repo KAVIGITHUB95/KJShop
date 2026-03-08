@@ -15,13 +15,13 @@ import java.util.List;
 import lk.kj.kjshop.R;
 
 
+
+
 public class ProductSliderAdapter extends RecyclerView.Adapter<ProductSliderAdapter.ProductSliderViewHolder> {
 
 
 
     private List<String> images;
-
-
 
     public ProductSliderAdapter(List<String> images) {
         this.images = images;
@@ -30,7 +30,7 @@ public class ProductSliderAdapter extends RecyclerView.Adapter<ProductSliderAdap
     @NonNull
     @Override
     public ProductSliderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.id.product_slider_item_image, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.product_slider_item, parent, false);
         return new ProductSliderViewHolder(view);
     }
 
@@ -40,20 +40,23 @@ public class ProductSliderAdapter extends RecyclerView.Adapter<ProductSliderAdap
     }
 
     @Override
+
     public int getItemCount() {
         return images.size();
     }
     public static class ProductSliderViewHolder extends RecyclerView.ViewHolder {
-
         ImageView imageView;
 
         public ProductSliderViewHolder(@NonNull View itemView) {
-
             super(itemView);
-            this.imageView = imageView.findViewById(R.id.product_slider_item_image);
+
+            this.imageView = itemView.findViewById(R.id.product_slider_item_image);
+
 
         }
 
 
+
     }
+
 }
