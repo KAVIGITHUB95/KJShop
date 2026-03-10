@@ -8,6 +8,7 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.util.Log;
 import android.view.Gravity;
@@ -24,8 +25,13 @@ import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import lk.kj.kjshop.R;
 import lk.kj.kjshop.adapter.ProductSliderAdapter;
+import lk.kj.kjshop.adapter.SectionAdapter;
 import lk.kj.kjshop.databinding.FragmentProductDetailsBinding;
 import lk.kj.kjshop.model.Product;
 
@@ -33,8 +39,13 @@ import lk.kj.kjshop.model.Product;
 public class ProductDetailsFragment extends Fragment {
 
     private FragmentProductDetailsBinding binding;
-
     private String productId;
+    private int quantity = 1;
+    private double price;
+
+    private int avbQuantity;
+
+    private Map<String, ChipGroup> attributeGroups = new HashMap<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -95,7 +106,7 @@ public class ProductDetailsFragment extends Fragment {
                     binding.productDetailsPrice.setText("LKR " + product.getPrice());
 
                     binding.productDetailsAvbQty.setText(String.valueOf(product.getStockCount()));
-
+                    avbQuantity = product.getStockCount();
 
                     if (product.getAttributes() != null) {
 
@@ -114,9 +125,68 @@ public class ProductDetailsFragment extends Fragment {
 
         });
 
+        binding.productDetailsBtnMinus.setOnClickListener(v -> {
+            if (quantity > 1) {
+                quantity--;
+                binding.productDetailsQuantity.setText(String.valueOf(quantity));
+            }
+        });
+
+        binding.productDetailsBtnPlus.setOnClickListener(v -> {
+            if (quantity < avbQuantity ) {
+                quantity++;
+                binding.productDetailsQuantity.setText(String.valueOf(quantity));
+            }
+
+        });
+
+        loadTopSellProduct();
 
 
+        binding.productDetailsBtnAddCart.setOnClickListener(v -> {
+
+
+
+            getFinalSelections();
+        });
     }
+
+
+
+    private void loadTopSellProduct() {
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("products").whereNotEqualTo("productId", productId).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot qds) {
+                if (!qds.isEmpty()) {
+                    List<Product> products = qds.toObjects(Product.class);
+
+                    LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+
+                    binding.productDetailsTopSellSection.itemSectionContainer.setLayoutManager(layoutManager);
+
+                    SectionAdapter adapter = new SectionAdapter(products, product -> {
+                        Bundle bundle = new Bundle();
+                        bundle.putString("productId", product.getProductId());
+
+                        ProductDetailsFragment productDetailsFragment = new ProductDetailsFragment();
+                        productDetailsFragment.setArguments(bundle);
+
+                        getParentFragmentManager().beginTransaction()
+                                .replace(R.id.fragment_container, productDetailsFragment)
+                                .addToBackStack(null)
+                                .commit();
+
+                    });
+
+                    binding.productDetailsTopSellSection.itemSectionTitle.setText("Top Selling Products");
+                    binding.productDetailsTopSellSection.itemSectionContainer.setAdapter(adapter);
+                }
+            }
+        });
+    }
+
     private void renderAttribute(Product.Attribute attribute, ViewGroup container) {
 
 
@@ -129,13 +199,17 @@ public class ProductDetailsFragment extends Fragment {
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(100, ViewGroup.LayoutParams.WRAP_CONTENT);
 
         layoutParams.gravity = Gravity.CENTER_VERTICAL;
+        label.setLayoutParams(layoutParams);
+
         label.setText(attribute.getName());
+        label.setTag(attribute.getName());
 
         row.addView(label);
 
 
         //Create Options
         ChipGroup group = new ChipGroup(getContext());
+        attributeGroups.put(attribute.getName(), group);
         group.setSelectionRequired(true);
         group.setSingleSelection(true);
 
@@ -147,7 +221,7 @@ public class ProductDetailsFragment extends Fragment {
             chip.setChipStrokeWidth(3f);
 
 
-
+            chip.setTag(value);
 
             if ("color".equals(attribute.getType())) {
                 chip.setChipBackgroundColor(ColorStateList.valueOf(Color.parseColor(value)));
@@ -158,13 +232,51 @@ public class ProductDetailsFragment extends Fragment {
             group.addView(chip);
         });
 
-
         row.addView(group);
-
 
         container.addView(row);
 
 
+
+        attributeGroups.put(attribute.getName(), group);
+
+
+    }
+
+    private void getFinalSelections() {
+        StringBuilder result = new StringBuilder("Selected: \n");
+
+
+
+        for (Map.Entry<String, ChipGroup> entry : attributeGroups.entrySet()) {
+
+            String attributeName = entry.getKey();
+
+            ChipGroup chipGroup = entry.getValue();
+
+            int checkedChipId = chipGroup.getCheckedChipId();
+
+            if (checkedChipId != -1) {
+                Chip chip = getView().findViewById(checkedChipId);
+                String value = chip.getText().toString();
+
+
+                if (value.isEmpty()) {
+
+
+
+
+
+
+                    result.append(attributeName).append(": " + chip.getChipBackgroundColor().toString()).append("\n");
+
+                } else {
+                    result.append(attributeName).append(": " + value).append("\n");
+                }
+            }
+        }
+
+        Log.i("Final Result", result.toString());
     }
 
     @Override
