@@ -65,10 +65,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         drawerLayout = binding.drawerLayout;
         toolbar = binding.toolbar;
-
         navigationView = binding.sideNavigationView;
-
         bottomNavigationView = binding.bottomNavigationView;
+
+
+
 
         setSupportActionBar(toolbar);
 
