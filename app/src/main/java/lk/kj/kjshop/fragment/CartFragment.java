@@ -31,19 +31,15 @@ import lk.kj.kjshop.model.CartItem;
 import lk.kj.kjshop.model.Product;
 
 
+
 public class CartFragment extends Fragment {
 
     private FragmentCartBinding binding;
     private List<CartItem> cartItems;
 
-
-
     @Override
-
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-
 
         binding = FragmentCartBinding.inflate(inflater, container, false);
         return binding.getRoot();
@@ -51,7 +47,6 @@ public class CartFragment extends Fragment {
 
 
     @Override
-
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
@@ -68,13 +63,13 @@ public class CartFragment extends Fragment {
                 @Override
                 public void onSuccess(QuerySnapshot qds) {
 
-
-
-
                     if (!qds.isEmpty()) {
 
-
                         cartItems = new ArrayList<>();
+
+
+
+
 
                         for(DocumentSnapshot ds : qds.getDocuments()) {
                             CartItem cartItem = ds.toObject(CartItem.class);
@@ -85,13 +80,13 @@ public class CartFragment extends Fragment {
                                 cartItems.add(cartItem);
                             }
                         }
-                        cartItems = qds.toObjects(CartItem.class);
+
+//                        cartItems = qds.toObjects(CartItem.class);
 
                         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
                         binding.cartCartItems.setLayoutManager(layoutManager);
 
                         CartAdapter adapter = new CartAdapter(cartItems);
-
 
                         adapter.setOnQuantityChangeListener(cartItem -> {
                             String documentId = cartItem.getDocumentId();
@@ -102,10 +97,7 @@ public class CartFragment extends Fragment {
                                         Toast.makeText(getContext(), "Item quantity has been updated!", Toast.LENGTH_SHORT).show();
                             });
 
-
-
                             updateTotal();
-
                         });
 
                         adapter.setOnRemoveListener(position -> {

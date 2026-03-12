@@ -29,13 +29,13 @@ public class CartItem {
     private String documentId;
     private String productId;
     private int quantity;
-    private List<Attribute> attribute;
+    private List<Attribute> attributes;
 
 
-    public CartItem(String productId, int quantity, List<Attribute> attribute) {
+    public CartItem(String productId, int quantity, List<Attribute> attributes) {
         this.productId = productId;
         this.quantity = quantity;
-        this.attribute = attribute;
+        this.attributes = attributes;
     }
 
     @Data

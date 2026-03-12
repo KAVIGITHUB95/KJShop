@@ -59,10 +59,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        db.collection("products")
-                .whereEqualTo("productId", cartItem.getProductId())
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        db.collection("products").whereEqualTo("productId", cartItem.getProductId()).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot qds) {
                         if (!qds.isEmpty()) {
@@ -90,7 +87,6 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
 
                             holder.btnPlus.setOnClickListener(v -> {
                                 if (cartItem.getQuantity() < product.getStockCount()) {
-
                                     cartItem.setQuantity(cartItem.getQuantity() + 1);
                                     notifyItemChanged(currentPosition);
                                     if (changeListener != null) {
@@ -154,6 +150,9 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             productTitle = itemView.findViewById(R.id.item_cart_title);
             productPrice = itemView.findViewById(R.id.item_cart_price);
             productQuantity = itemView.findViewById(R.id.item_cart_quantity);
+            btnPlus = itemView.findViewById(R.id.item_cart_btn_plus);
+            btnMinus = itemView.findViewById(R.id.item_cart_btn_minus);
+            btnRemove = itemView.findViewById(R.id.item_cart_remove);
         }
 
     }
